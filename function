@@ -1,0 +1,38 @@
+function makeMontage(fname, nDisplay)
+% Aim: A function that allows us to create a simple montage from a 3D
+% dataset.
+%
+% Specify a filename
+% Specify nDisplay (how many slices to display from start to end)
+%
+% makeMontage('~/data/subject-C/mprage.nii.gz', 20)
+%
+% AS 2020-03-06, session 5, data analysis (dafni) class.
+
+%% Load in Nifti File 
+% 
+data = niftiread(fname);
+
+%% Create robustRange
+
+robustRange = prctile(data(:), [5, 95]); % if the data is not displayed in their true form, it should be clarified to users when using this function. 
+
+%% Permute Data 
+% What are you trying to achieve?
+% So the number of indices in the 3rd dimension here is safe. 
+
+% permute step (to make sure images display a bit nicer)
+% TODO: Choice for permutation works for anatomy images from this class,
+% but would be nice to have more generic solution that ALWAYS WORKS. 
+dataP = permute(data, [2, 1, 3]);
+
+%% Figure out Indices
+
+nSlices = size(data, 3); 
+idx= round( linspace(1, nSlices, nDisplay)); % nice numbers 
+
+%% Make Montage with matlab command 
+
+montage(dataP, 'indices', idx, 'Displayrange', robustRange);
+
+end 
